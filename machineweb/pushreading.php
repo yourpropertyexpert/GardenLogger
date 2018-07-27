@@ -4,6 +4,15 @@
 // There is complexity about using localhost for Mysql connections,
 // so for Docker on Mac (which I use), it's better to use host.docker.internal
 
+// You will note that I'm explicitly including the credentials here, rather than sharing
+// them with /site. This is to allow this page to use a database user with R/W access,
+// and the /site one to use a database user with Read-Only access.
+
+
+// In production, it is better to move the credentials out to the environment rather than
+// having them in the code.
+
+
 $dbservername = "host.docker.internal";
 $dbdatabasename = "gardenlogger";
 $dbusername = "username";
@@ -25,7 +34,9 @@ if ($conn->connect_error) {
 // so it's good practice to output something to help debug.
 
 
-$sql = "INSERT INTO $dbdatabasename VALUES (1,NOW(), 1)";
+// ---> TO DO ... the use right database 
+
+$sql = "INSERT INTO Readings VALUES (1,NOW(), 1)";
 if ($conn->query($sql) === TRUE) {
     echo "<p>Updated OK.</p>";
 } else {
