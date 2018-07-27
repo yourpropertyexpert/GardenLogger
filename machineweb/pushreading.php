@@ -9,7 +9,7 @@
 // and the /site one to use a database user with Read-Only access.
 
 
-// In production, it is better to move the credentials out to the environment rather than 
+// In production, it is better to move the credentials out to the environment rather than
 // having them in the code.
 
 
@@ -34,7 +34,9 @@ if ($conn->connect_error) {
 // so it's good practice to output something to help debug.
 
 
-$sql = "INSERT INTO $dbdatabasename VALUES (1,NOW(), 1)";
+// ---> TO DO ... the use right database 
+
+$sql = "INSERT INTO Readings VALUES (1,NOW(), 1)";
 if ($conn->query($sql) === TRUE) {
     echo "<p>Updated OK.</p>";
 } else {
