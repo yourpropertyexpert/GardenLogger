@@ -15,8 +15,7 @@ To make this work, you will need:
 
 There are several parts to the codebase:
 
-- A python script, intended for running on a Raspberry PI (or other device with GPIO) connected to Dallas 1Wire temperature sensors. This simple reads all the temperature sensors and, for each one, calls a URI.
-- /machineweb Some PHP, running out on a webserver, to accept the URI calls from the python script, and write the calls to a MySQL database.
-- /site Some PHP, running out on a webserver, to show humans some (pretty) pages about their garden temperature.
-- /sql The SQL required to create the database structures
-
+- /pi : A python script, intended for running on a Raspberry PI (or other device with GPIO) connected to Dallas 1Wire temperature sensors. This simple reads all the temperature sensors and, for each one, calls a URI.
+- /machineweb : Some PHP, running out on a webserver, to accept the URI calls from the python script, and write the calls to a MySQL database.
+- /site : Some PHP, running out on a webserver, to show humans some (pretty) pages about their garden temperature.
+- /sql : The SQL required to create the database structures
