@@ -14,18 +14,22 @@
 
 
 $dbservername = "host.docker.internal";
-$dbdatabasename = "gardenlogger";
-$dbusername = "username";
-$dbpassword = "password";
+$dbdatabasename = "GardenWeb";
+$dbusername = "rasp";
+$dbpassword = "rasprasp";
 
 // Create connection
 
-$conn = new mysqli($dbservername, $dbusername, $dbpassword);
+$conn = new mysqli($dbservername, $dbusername, $dbpassword, $dbdatabasename);
 // Check connection
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
+
+
+$SensorID=$_GET['SensorID'];
+$SensorReading=$_GET['Reading'];
 
 // INSERT VALUES ....
 
@@ -34,11 +38,15 @@ if ($conn->connect_error) {
 // so it's good practice to output something to help debug.
 
 
-// ---> TO DO ... the use right database 
+$sql = "INSERT
+  INTO Readings (Sensor, ReadingTimeDate, Reading)
+  VALUES ('$SensorID', NOW(), $SensorReading)
+  ";
 
-$sql = "INSERT INTO Readings VALUES (1,NOW(), 1)";
 if ($conn->query($sql) === TRUE) {
-    echo "<p>Updated OK.</p>";
+    echo "Updated reading of $SensorReading for sensor $SensorID OK.";
+
+
 } else {
     echo "<p>Error updating</p>: " . $conn->error;
 }
