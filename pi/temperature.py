@@ -2,6 +2,8 @@
 import os
 import glob
 import time
+from urllib import urlencode
+import urllib2
 
 os.system('modprobe w1-gpio')
 os.system('modprobe w1-therm')
@@ -47,15 +49,18 @@ def output_temp(sensor):
   print ('temperature')
   print (read_temp(sensor))
 
+  print ('updating website:')
+
+  url = 'http://192.168.1.240/pushreading.php?SensorID='+device_name+'&Reading='+str(read_temp(sensor))
+  response = urllib2.urlopen(url)
+  the_page = response.read()
+  print (the_page)
 
 x = 0
 
-while True:
-  while x < device_count:
-    output_temp(x)
-    x +=1
+while x < device_count:
+  output_temp(x)
+  x +=1
  
-  x = 0
 
-  time.sleep(30)
 
