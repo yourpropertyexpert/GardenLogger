@@ -6,3 +6,10 @@ CREATE TABLE Readings (
   ReadingTimeDate datetime,
   Reading decimal(6,2)
 );
+
+
+
+CREATE USER 'rasp'@'%' IDENTIFIED BY 'rasprasp';
+
+GRANT ALL PRIVILEGES ON * . * TO 'rasp'@'%';
+
