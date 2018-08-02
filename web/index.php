@@ -9,6 +9,8 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+  <script src="http://code.highcharts.com/highcharts.js"></script>
+
 </head>
 
 <body>
@@ -19,6 +21,7 @@
     <p>Gardenlogger is a website (that runs on a web server on the Internet)
        that accepts temperature readings (from sensors attached to a Raspberry Pi) in the home...</p>
 </div>
+
 
 <?php
 
@@ -48,9 +51,11 @@ if ($conn->connect_error) {
 }
 
 
+echo '<div class="container">
+      <h2>Chart</h2>
+      <div id="chartcontainer"/>
+      </div>';
 
-$SensorID=$_GET['SensorID'];
-$SensorReading=$_GET['Reading'];
 
 // INSERT VALUES ....
 
@@ -66,12 +71,16 @@ if(!$result = $conn->query($sql)){
   }
 else {
 
-  $LastSensor="";
+  $CategoriesArray=[];
+  $DataArray=[];
+  $PreviousSensor="";
 
+  echo "<div class='container'>";
+  echo "<h2>Table</h2>";
   echo "<table class='table-striped'>";
   while($row = $result->fetch_assoc()){
 
-    if ($LastSensor==$row['Sensor']) {
+    if ($PreviousSensor==$row['Sensor']) {
       echo "<tr>";
       echo "<td/>";
       }
@@ -79,23 +88,70 @@ else {
       echo "<tr class='table-primary'>";
       echo "<td>";
       echo $row['Sensor'];
+      $CategoriesArray[]=$row['Sensor'];
       echo "</td><td/><td/></tr><tr><td/>";
       }
     echo "<td>";
     echo $row['ReadingTimeDate'];
     echo "</td>";
     echo "<td>";
+    $DataArray[$row['Sensor']][]="[".(1000*strtotime($row['ReadingTimeDate'])).",".$row['Reading']."]";
     echo $row['Reading'];
     echo "</td>";
     echo "</tr>";
-    $LastSensor=$row['Sensor'];
+    $PreviousSensor=$row['Sensor'];
     }
+
   echo "</table>";
+  echo "</div>";
+
+  $CategoriesString="['".implode("','", $CategoriesArray)."']";
+
+  $DataString='[';
+
+  foreach ($DataArray as $key => $value) {
+    if($DataString!='[')
+      $DataString.=',';
+    $DataString.="{name: '";
+    $DataString.=$key;
+    $DataString.="',";
+    $DataString.='data: [';
+    $DataString.=implode(",",$value);
+    $DataString.="]}";
   }
 
-
-
+  $DataString.="]";
+    echo
+    "<script>
+    $(function () {
+        var myChart = Highcharts.chart('chartcontainer', {
+            chart: {
+                type: 'line'
+            },
+            title: {
+                text: 'Temperatures over time'
+            },
+            xAxis: {
+              type: 'datetime'
+            },
+            yAxis: {
+                title: {
+                    text: ''
+                }
+            },
+            series: $DataString
+        });
+    });
+    </script>";
+  }
 
 $conn->close();
+
+
+print_r($DataString);
+
 ?>
+
+
+
 </body>
