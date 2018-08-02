@@ -10,6 +10,8 @@ CREATE TABLE Readings (
 
 
 CREATE USER 'rasp'@'%' IDENTIFIED BY 'rasprasp';
-
 GRANT ALL PRIVILEGES ON * . * TO 'rasp'@'%';
 
+
+CREATE USER 'website'@'%' IDENTIFIED BY 'rasprasp';
+GRANT SELECT ON * . * TO 'website'@'%';
