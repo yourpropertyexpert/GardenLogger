@@ -5,9 +5,8 @@
 // so for Docker on Mac (which I use), it's better to use host.docker.internal
 
 // You will note that I'm explicitly including the credentials here, rather than sharing
-// them with /site. This is to allow this page to use a database user with R/W access,
-// and the /site one to use a database user with Read-Only access.
-
+// them with index. This is to allow this page to use a database user with R/W access,
+// and the human-facing one to use a database user with Read-Only access.
 
 // In production, it is better to move the credentials out to the environment rather than
 // having them in the code.
