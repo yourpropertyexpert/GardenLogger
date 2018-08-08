@@ -158,7 +158,7 @@ else {
 $conn->close();
 
 
-print_r($DataString);
+// print_r($DataString);
 
 ?>
 
