@@ -7,6 +7,11 @@ CREATE TABLE Readings (
   Reading decimal(6,2)
 );
 
+CREATE TABLE SensorNames (
+  Sensor varchar(255),
+  SensorName varchar(255)
+);
+
 
 
 CREATE USER 'rasp'@'%' IDENTIFIED BY 'rasprasp';

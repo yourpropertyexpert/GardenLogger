@@ -66,6 +66,14 @@ echo '<div class="container">
 
 $sql = "SELECT * FROM Readings ORDER BY SENSOR, ReadingTimeDate DESC;";
 
+$sql ="select
+  IFNULL(SensorNames.SensorName, Readings.Sensor) AS Sensor,
+  ReadingTimeDate,
+  Reading
+  FROM Readings
+  LEFT JOIN SensorNames
+  ON Readings.Sensor=SensorNames.Sensor;
+  ";
 if(!$result = $conn->query($sql)){
     die('There was an error running the query [' . $db->error . ']');
   }
