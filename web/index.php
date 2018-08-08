@@ -64,15 +64,17 @@ echo '<div class="container">
 // so it's good practice to output something to help debug.
 
 
-$sql = "SELECT * FROM Readings ORDER BY SENSOR, ReadingTimeDate DESC;";
+$sql = "SELECT * FROM Readings ORDER BY SENSOR, ReadingTimeDate DESC ;";
 
-$sql ="select
+$sql ="SELECT
   IFNULL(SensorNames.SensorName, Readings.Sensor) AS Sensor,
   ReadingTimeDate,
   Reading
   FROM Readings
   LEFT JOIN SensorNames
-  ON Readings.Sensor=SensorNames.Sensor;
+  ON Readings.Sensor=SensorNames.Sensor
+  ORDER BY SENSOR, Readings.ReadingTimeDate DESC
+  ;
   ";
 if(!$result = $conn->query($sql)){
     die('There was an error running the query [' . $db->error . ']');
