@@ -64,20 +64,40 @@ if ($conn->connect_error) {
 }
 
 
-echo '<div class="container">
-      <h2>Chart</h2>
-      <div id="chartcontainer"/>
-      </div>';
+echo '<div class="container">';
+
+        $sql = "
+        SELECT SensorNames.SensorName as SensorName, Reading
+        FROM SensorNames, Readings
+        INNER JOIN
+        (SELECT Sensor, Max(ReadingTimeDate) AS MostRecentTimeStamp
+        FROM Readings GROUP BY Sensor) MostRecents
+        ON MostRecents.Sensor=Readings.Sensor
+        WHERE SensorNames.Sensor = Readings.Sensor
+        AND Readings.ReadingTimeDate=MostRecents.MostRecentTimeStamp
+        ORDER BY SensorName
+        ;
+        ";
 
 
-// INSERT VALUES ....
+        if(!$result = $conn->query($sql)){
+          die('There was an error running the query [' . $db->error . ']');
+        }
+        else {
+          echo "<div class='container'";
+          while($row = $result->fetch_assoc())
+          {
+            echo "<p>";
+            echo $row['SensorName'];
+            echo " - ";
+            echo $row['Reading'];
+            echo "</p>";
+          }
+        }
 
-// In normal use, no human will ever see this output, but
-// the response will be shown on screen for people running the client manually
-// so it's good practice to output something to help debug.
-
-
-
+echo '<h2>Chart</h2>
+        <div id="chartcontainer"/>
+        </div>';
 
 
 $sql ="SELECT
@@ -145,36 +165,6 @@ else {
     </script>";
   }
 
-
-
-  $sql = "
-  SELECT SensorNames.SensorName as SensorName, Reading
-  FROM SensorNames, Readings
-  INNER JOIN
-  (SELECT Sensor, Max(ReadingTimeDate) AS MostRecentTimeStamp
-  FROM Readings GROUP BY Sensor) MostRecents
-  ON MostRecents.Sensor=Readings.Sensor
-  WHERE SensorNames.Sensor = Readings.Sensor
-  AND Readings.ReadingTimeDate=MostRecents.MostRecentTimeStamp
-  ORDER BY SensorName
-  ;
-  ";
-
-
-  if(!$result = $conn->query($sql)){
-    die('There was an error running the query [' . $db->error . ']');
-  }
-  else {
-    echo "<div class='container'";
-    while($row = $result->fetch_assoc())
-    {
-      echo "<p>";
-      echo $row['SensorName'];
-      echo " - ";
-      echo $row['Reading'];
-      echo "</p>";
-    }
-  }
 
 
 

@@ -68,12 +68,6 @@ echo '<div class="container">
       </div>';
 
 
-// INSERT VALUES ....
-
-// In normal use, no human will ever see this output, but
-// the response will be shown on screen for people running the client manually
-// so it's good practice to output something to help debug.
-
 
 $sql = "SELECT * FROM Readings ORDER BY SENSOR, ReadingTimeDate DESC ;";
 
