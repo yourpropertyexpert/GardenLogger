@@ -16,12 +16,11 @@
 <body>
 
 
-<div class="jumbotron">
-  <h1>GardenLogger</h1>
-  <p>Gardenlogger is a website (that runs on a web server on the Internet)
-     that accepts temperature readings (from sensors attached to a Raspberry Pi) in the home...</p>
+  <div class="jumbotron">
+    <h1>GardenLogger</h1>
+    <p>Gardenlogger is a website (that runs on a web server on the Internet)
+       that accepts temperature readings (from sensors attached to a Raspberry Pi) in the home...</p>
 </div>
-
 
 <nav class="navbar navbar-expand-sm bg-dark navbar-dark fixed-top">
 
@@ -34,7 +33,6 @@
     </li>
   </ul>
 </nav>
-
 
 <?php
 
@@ -77,8 +75,7 @@ echo '<div class="container">
 // so it's good practice to output something to help debug.
 
 
-
-
+$sql = "SELECT * FROM Readings ORDER BY SENSOR, ReadingTimeDate DESC ;";
 
 $sql ="SELECT
   IFNULL(SensorNames.SensorName, Readings.Sensor) AS Sensor,
@@ -97,13 +94,37 @@ else {
 
   $CategoriesArray=[];
   $DataArray=[];
+  $PreviousSensor="";
 
+  echo "<div class='container'>";
+  echo "<h2>Table</h2>";
+  echo "<table class='table-striped'>";
   while($row = $result->fetch_assoc()){
 
-    $CategoriesArray[]=$row['Sensor'];
+    if ($PreviousSensor==$row['Sensor']) {
+      echo "<tr>";
+      echo "<td/>";
+      }
+    else {
+      echo "<tr class='table-primary'>";
+      echo "<td>";
+      echo $row['Sensor'];
+      $CategoriesArray[]=$row['Sensor'];
+      echo "</td><td/><td/></tr><tr><td/>";
+      }
+    echo "<td>";
+    echo $row['ReadingTimeDate'];
+    echo "</td>";
+    echo "<td>";
     $DataArray[$row['Sensor']][]="[".(1000*strtotime($row['ReadingTimeDate'])).",".$row['Reading']."]";
+    echo $row['Reading'];
+    echo "</td>";
+    echo "</tr>";
+    $PreviousSensor=$row['Sensor'];
     }
 
+  echo "</table>";
+  echo "</div>";
 
   $CategoriesString="['".implode("','", $CategoriesArray)."']";
 
@@ -144,39 +165,6 @@ else {
     });
     </script>";
   }
-
-
-
-  $sql = "
-  SELECT SensorNames.SensorName as SensorName, Reading
-  FROM SensorNames, Readings
-  INNER JOIN
-  (SELECT Sensor, Max(ReadingTimeDate) AS MostRecentTimeStamp
-  FROM Readings GROUP BY Sensor) MostRecents
-  ON MostRecents.Sensor=Readings.Sensor
-  WHERE SensorNames.Sensor = Readings.Sensor
-  AND Readings.ReadingTimeDate=MostRecents.MostRecentTimeStamp
-  ORDER BY SensorName
-  ;
-  ";
-
-
-  if(!$result = $conn->query($sql)){
-    die('There was an error running the query [' . $db->error . ']');
-  }
-  else {
-    echo "<div class='container'";
-    while($row = $result->fetch_assoc())
-    {
-      echo "<p>";
-      echo $row['SensorName'];
-      echo " - ";
-      echo $row['Reading'];
-      echo "</p>";
-    }
-  }
-
-
 
 $conn->close();
 
