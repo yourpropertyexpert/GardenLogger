@@ -29,7 +29,7 @@
       <a class="nav-link" href="index.php">Home</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" href="table.php">All readings</a>
+      <a class="nav-link .active" href="table.php">All readings</a>
     </li>
   </ul>
 </nav>
