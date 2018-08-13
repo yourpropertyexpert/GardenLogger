@@ -64,10 +64,13 @@ if ($conn->connect_error) {
 }
 
 
+// SQL to select the "most recent temperatures"
+// This relies on the fact that the most recent time/date is the "Max" of ReadingTimeDate
+
 echo '<div class="container">';
 
         $sql = "
-        SELECT SensorNames.SensorName as SensorName, Reading
+        SELECT SensorNames.SensorName as SensorName, Reading, ReadingTimeDate
         FROM SensorNames, Readings
         INNER JOIN
         (SELECT Sensor, Max(ReadingTimeDate) AS MostRecentTimeStamp
@@ -84,16 +87,32 @@ echo '<div class="container">';
           die('There was an error running the query [' . $db->error . ']');
         }
         else {
-          echo "<div class='container'";
+          echo "<div class='card-columns'>\r\n";
+
           while($row = $result->fetch_assoc())
           {
-            echo "<p>";
+            echo "<div class=card>\r\n";
+            echo "<div class='card-header'>";
             echo $row['SensorName'];
-            echo " - ";
+            echo "</div>\r\n";
+            echo "<div class='card-body'>";
             echo $row['Reading'];
-            echo "</p>";
+            echo "</div>\r\n";
+            echo "<div class='card-footer'>";
+            echo $row['ReadingTimeDate'];
+            echo "</div>\r\n";
+            echo "</div>\r\n";
+
           }
+
+          echo "</div>\r\n";
         }
+echo "</div>";
+
+
+// Now the chart
+// This code is duplicated into the "table.php", and probably ought to be pulled into an include
+
 
 echo '<h2>Chart</h2>
         <div id="chartcontainer"/>
