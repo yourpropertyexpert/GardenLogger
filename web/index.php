@@ -67,8 +67,6 @@ if ($conn->connect_error) {
 // SQL to select the "most recent temperatures"
 // This relies on the fact that the most recent time/date is the "Max" of ReadingTimeDate
 
-echo '<div class="container">';
-
         $sql = "
         SELECT SensorNames.SensorName as SensorName, Reading, ReadingTimeDate
         FROM SensorNames, Readings
@@ -83,30 +81,35 @@ echo '<div class="container">';
         ";
 
 
-        if(!$result = $conn->query($sql)){
-          die('There was an error running the query [' . $db->error . ']');
-        }
-        else {
-          echo "<div class='card-columns'>\r\n";
+// Loop through the results, creating a Bootstrap "card" for each
 
-          while($row = $result->fetch_assoc())
-          {
-            echo "<div class=card>\r\n";
-            echo "<div class='card-header'>";
-            echo $row['SensorName'];
-            echo "</div>\r\n";
-            echo "<div class='card-body'>";
-            echo $row['Reading'];
-            echo "</div>\r\n";
-            echo "<div class='card-footer'>";
-            echo $row['ReadingTimeDate'];
-            echo "</div>\r\n";
-            echo "</div>\r\n";
 
-          }
+echo '<div class="container">';
 
+      if(!$result = $conn->query($sql)){
+        die('There was an error running the query [' . $db->error . ']');
+      }
+      else {
+        echo "<div class='card-columns'>\r\n";
+
+        while($row = $result->fetch_assoc())
+        {
+          echo "<div class=card>\r\n";
+          echo "<div class='card-header'>";
+          echo $row['SensorName'];
           echo "</div>\r\n";
+          echo "<div class='card-body'><h3>";
+          echo $row['Reading'];
+          echo "</h3></div>\r\n";
+          echo "<div class='card-footer'>";
+          echo $row['ReadingTimeDate'];
+          echo "</div>\r\n";
+          echo "</div>\r\n";
+
         }
+
+        echo "</div>\r\n";
+      }
 echo "</div>";
 
 
