@@ -30,6 +30,9 @@
       <a class="nav-link .active" href="index.php">Home</a>
     </li>
     <li class="nav-item">
+      <a class="nav-link" href="recent.php">Last 24 hours</a>
+    </li>
+    <li class="nav-item">
       <a class="nav-link" href="table.php">All readings</a>
     </li>
   </ul>
