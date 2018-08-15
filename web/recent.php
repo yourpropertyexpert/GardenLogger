@@ -158,6 +158,7 @@ else {
           die('There was an error running the query [' . $db->error . ']');
         }
         else {
+          echo "<h2>Last 24 hours</h2>";
           echo "<div class='card-columns'>\r\n";
 
           while($row = $result->fetch_assoc())
