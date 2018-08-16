@@ -39,6 +39,8 @@
         <a class="dropdown-item" href="recent.php?Duration=24h">Day</a>
         <a class="dropdown-item" href="recent.php?Duration=7d">Week</a>
         <a class="dropdown-item" href="recent.php?Duration=1mo">Month</a>
+        <a class="dropdown-item" href="recent.php?Duration=1y">Year</a>
+        <a class="dropdown-item" href="recent.php?Duration=100y">All time</a>
       </div>
     </li>
     <li class="nav-item">
