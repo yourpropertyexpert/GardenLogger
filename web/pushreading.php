@@ -29,6 +29,10 @@ if ($conn->connect_error) {
 
 $SensorID=$_GET['SensorID'];
 $SensorReading=$_GET['Reading'];
+$ValidationReceived=$_GET['Code'];
+$ValidationExpected="secret";  // Change this to a Validation secret to match the one the Pi is sending
+
+
 
 // INSERT VALUES ....
 
@@ -36,6 +40,19 @@ $SensorReading=$_GET['Reading'];
 // the response will be shown on screen for people running the client manually
 // so it's good practice to output something to help debug.
 
+if ($ValidationExpected!=$ValidationReceived) {
+  die("<p>Validation code missing or invalid</p>");
+
+}
+
+if (!is_numeric($SensorReading)) {
+  die("<p>Reading appeared bogus</p>");
+}
+
+
+if (!is_numeric($SensorReading)) {
+  die("<p>Reading appeared bogus</p>");
+}
 
 $sql = "INSERT
   INTO Readings (Sensor, ReadingTimeDate, Reading)
