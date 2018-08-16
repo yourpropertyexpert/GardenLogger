@@ -16,6 +16,8 @@ $dbservername = "host.docker.internal";
 $dbdatabasename = "GardenWeb";
 $dbusername = "rasp";
 $dbpassword = "rasprasp";
+$ValidationExpected="secret";  // Change this to a Validation secret to match the one the Pi is sending
+
 
 // Create connection
 
@@ -26,12 +28,17 @@ if ($conn->connect_error) {
 }
 
 
+// We need to escape this to ensure that it's not going to give us SQL injection problems
 
 $SensorID=$_GET['SensorID'];
-$SensorReading=$_GET['Reading'];
-$ValidationReceived=$_GET['Code'];
-$ValidationExpected="secret";  // Change this to a Validation secret to match the one the Pi is sending
+$SensorID=mysqli_real_escape_string($conn,$SensorID);
 
+
+// We don't need to escape the code, because all we do is compare it
+$ValidationReceived=$_GET['Code'];
+
+// We don't need to escape the reading, because we're going type check it
+$SensorReading=$_GET['Reading'];
 
 
 // INSERT VALUES ....
