@@ -51,7 +51,7 @@ def output_temp(sensor):
 
   print ('updating website:')
 
-  url = 'http://192.168.1.240/pushreading.php?SensorID='+device_name+'&Reading='+str(read_temp(sensor))
+  url = 'http://192.168.1.240/pushreading.php?Code=secret&SensorID='+device_name+'&Reading='+str(read_temp(sensor))
   response = urllib2.urlopen(url)
   the_page = response.read()
   print (the_page)
