@@ -29,8 +29,17 @@
     <li class="nav-item">
       <a class="nav-link" href="index.php">Home</a>
     </li>
-    <li class="nav-item .active">
-      <a class="nav-link" href="recent.php">Last 24 hours</a>
+    <li class="nav-item dropdown">
+      <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+        Recent
+      </a>
+      <div class="dropdown-menu">
+        <a class="dropdown-item" href="recent.php?Duration=1h">Hour</a>
+        <a class="dropdown-item" href="recent.php?Duration=12h">12 hours</a>
+        <a class="dropdown-item" href="recent.php?Duration=24h">Day</a>
+        <a class="dropdown-item" href="recent.php?Duration=7d">Week</a>
+        <a class="dropdown-item" href="recent.php?Duration=1mo">Month</a>
+      </div>
     </li>
     <li class="nav-item">
       <a class="nav-link" href="table.php">All readings</a>
@@ -53,6 +62,40 @@
 // having them in the code.
 
 
+switch($_GET['Duration']) {
+
+  case '1h':
+  $DurationString="1 HOUR";
+  $DurationDisplay = "hour";
+  break;
+
+
+  case '12h':
+  $DurationString="12 HOUR";
+  $DurationDisplay = "12 hours";
+  break;
+
+  case '24h':
+  $DurationString="1 DAY";
+  $DurationDisplay = "24 hours";
+  break;
+
+  case '7d':
+  $DurationString="7 DAY";
+  $DurationDisplay = "week";
+  break;
+
+  case '1mo':
+  $DurationString="1 MONTH";
+  $DurationDisplay = "month";
+  break;
+
+
+  default:
+    $DurationString="1 DAY";
+    $DurationDisplay = "day";
+}
+
 $dbservername = "host.docker.internal";
 $dbdatabasename = "GardenWeb";
 $dbusername = "website";
@@ -69,7 +112,7 @@ if ($conn->connect_error) {
 
 $AveragesArray=[];
 
-// Get the data for the last 24 hours
+// Get the data for the period
 
 $sql ="SELECT
   IFNULL(SensorNames.SensorName, Readings.Sensor) AS Sensor,
@@ -78,7 +121,7 @@ $sql ="SELECT
   FROM Readings
   LEFT JOIN SensorNames
   ON Readings.Sensor=SensorNames.Sensor
-  WHERE ReadingTimeDate >= NOW() - INTERVAL 1 DAY
+  WHERE ReadingTimeDate >= NOW() - INTERVAL $DurationString
   ORDER BY SENSOR, Readings.ReadingTimeDate DESC
   ;
   ";
@@ -143,7 +186,9 @@ else {
 
 
   echo '<div class="container">';
-  echo '<h2>Metrics over the last 24 hours</h2>
+  echo '<h2>Metrics over the last ';
+  echo $DurationDisplay;
+  echo '</h2>
           <div id="metricschartcontainer"/>
           </div>';
   echo '</div>';
@@ -155,7 +200,7 @@ else {
           die('There was an error running the query [' . $db->error . ']');
         }
         else {
-          echo "<h2>Last 24 hours</h2>";
+          echo "<h2>Last $DurationDisplay</h2>";
           echo "<div class='card-columns'>\r\n";
 
           while($row = $result->fetch_assoc())
@@ -196,12 +241,14 @@ else {
 
 
 
-  // Output the "last 24 hours chart"
+  // Output the "last period chart"
 
 
 
   echo '<div class="container">';
-  echo '<h2>Readings over the last 24 hours</h2>
+  echo '<h2>Readings over the last ';
+  echo $DurationDisplay;
+  echo '</h2>
           <div id="timeserieschartcontainer"/>
           </div>';
   echo '</div>';
@@ -215,7 +262,7 @@ else {
               type: 'line'
           },
           title: {
-              text: 'Temperatures over last 24 hours'
+              text: 'Temperatures over last $DurationDisplay'
           },
           xAxis: {
             type: 'datetime'
@@ -269,7 +316,7 @@ else {
               type: 'column'
           },
           title: {
-              text: 'Metrics over last 24 hours'
+              text: 'Metrics over last $DurationDisplay'
           },
           xAxis: {
             categories: ['Min','Average','Max','Current']

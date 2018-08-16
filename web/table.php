@@ -28,8 +28,17 @@
     <li class="nav-item">
       <a class="nav-link" href="index.php">Home</a>
     </li>
-    <li class="nav-item">
-      <a class="nav-link" href="recent.php">Last 24 hours</a>
+    <li class="nav-item dropdown">
+      <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+        Recent
+      </a>
+      <div class="dropdown-menu">
+        <a class="dropdown-item" href="recent.php?Duration=1h">Hour</a>
+        <a class="dropdown-item" href="recent.php?Duration=12h">12 hours</a>
+        <a class="dropdown-item" href="recent.php?Duration=24h">Day</a>
+        <a class="dropdown-item" href="recent.php?Duration=7d">Week</a>
+        <a class="dropdown-item" href="recent.php?Duration=1mo">Month</a>
+      </div>
     </li>
     <li class="nav-item">
       <a class="nav-link .active" href="table.php">All readings</a>
