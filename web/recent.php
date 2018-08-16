@@ -279,65 +279,103 @@ else {
 
 
 
-      $MetricsString='[';
+      $SensorsArray=[];
+      $RangeArray=[];
+      $AverageArray=[];
+      $CurrentArray=[];
 
       foreach ($AveragesArray as $key => $value) {
 
 // Stuff to format the metrics string goes here
 
-        $MetricsString.="{ name:'";
-        $MetricsString.=$key;
-        $MetricsString.="',\r\n";
-        $MetricsString.="data:[";
-        $MetricsString.=$value['Min'];
-        $MetricsString.=", ";
-        $MetricsString.=$value['RoundedAverage'];
-        $MetricsString.=", ";
-        $MetricsString.=$value['Max'];
-        $MetricsString.=", ";
-        $MetricsString.=$value['Current'];
-        $MetricsString.="]\r\n";
-        $MetricsString.="},";
-        echo "<div>";
-        print_r($key);
-        print_r($value);
-        echo "</div>";
+      $SensorsArray[]=$key;
+      $RangeArray[]=($value['Min'].",".$value['Max']);
+      $AverageArray[]=(($value['RoundedAverage']-0.05).",".($value['RoundedAverage']+0.05));
+      $CurrentArray[]=(($value['Current']-0.05).",".($value['Current']+0.05));
+
+      echo "<div>";
+      print_r($key);
+      echo "<br/>";
+      print_r($value);
+      echo "<hr/></div>";
 
       }
-      $MetricsString.="{}]";
+
+      $SensorsString="['";
+      $SensorsString.=implode("','",$SensorsArray);
+      $SensorsString.="']";
+
+      $RangeString="[[";
+      $RangeString.=implode("],[",$RangeArray);
+      $RangeString.="]]";
+
+      $AverageString="[[";
+      $AverageString.=implode("],[",$AverageArray);
+      $AverageString.="]]";
+
+      $CurrentString="[[";
+      $CurrentString.=implode("],[",$CurrentArray);
+      $CurrentString.="]]";
+
 
 
 
   echo
-  "<script>
+  "<script src='https://code.highcharts.com/highcharts-more.js'></script>
+  <script>
   $(function () {
       var myChart = Highcharts.chart('metricschartcontainer', {
           chart: {
-              type: 'column'
+            type: 'column'
           },
           title: {
               text: 'Metrics over last $DurationDisplay'
           },
           xAxis: {
-            categories: ['Min','Average','Max','Current']
+            categories: $SensorsString
           },
           yAxis: {
               title: {
-                  text: ''
+                  text: 'Hello'
               }
           },
-          series: $MetricsString
+          series: [
+            {
+              type: 'columnrange',
+              name: 'Range',
+              color: 'green',
+              stacking: 'normal',
+              data: $RangeString
+            },
+            {
+              name: 'Average',
+              type: 'columnrange',
+              color: 'yellow',
+              borderWidth: 2,
+              borderColor: 'yellow',
+              stacking: 'normal',
+              data: $AverageString
+            },
+            {
+              name: 'Current',
+              type: 'columnrange',
+              color: 'blue',
+              stacking: '',
+              borderWidth: 2,
+              borderColor: 'blue',
+              data: $CurrentString
+            }
+          ]
       });
   });
   </script>";
 
 
 $conn->close();
-
-
- print_r($AveragesArray);
- echo "<hr/>";
- print_r($MetricsString);
+  // print_r($SensorsString);
+  // echo "<hr/>";
+  print_r($CurrentString);
+  // echo "<hr/>";
 
 ?>
 
