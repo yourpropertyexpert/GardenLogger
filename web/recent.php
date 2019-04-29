@@ -35,7 +35,8 @@
       </a>
       <div class="dropdown-menu">
         <a class="dropdown-item" href="recent.php?Duration=1h">Hour</a>
-        <a class="dropdown-item" href="recent.php?Duration=12h">12 hours</a>
+        <a class="dropdown-item" href="recent.php?Duration=4h">4 hours</a>
+        <a class="dropdown-item" href="recent.php?Duration=12h">12 hour</a>
         <a class="dropdown-item" href="recent.php?Duration=24h">Day</a>
         <a class="dropdown-item" href="recent.php?Duration=7d">Week</a>
         <a class="dropdown-item" href="recent.php?Duration=1mo">Month</a>
@@ -70,6 +71,11 @@ switch($_GET['Duration']) {
   case '1h':
   $DurationString="1 HOUR";
   $DurationDisplay = "hour";
+  break;
+
+  case '4h':
+  $DurationString="4 HOUR";
+  $DurationDisplay = "4 hours";
   break;
 
 
@@ -108,6 +114,7 @@ switch($_GET['Duration']) {
     $DurationDisplay = "day";
 }
 
+
 $dbservername = "host.docker.internal";
 $dbdatabasename = "GardenWeb";
 $dbusername = "website";
@@ -122,28 +129,27 @@ if ($conn->connect_error) {
 }
 
 
-$AveragesArray=[];
+$AveragesArray=array();
 
 // Get the data for the period
 
 $sql ="SELECT
-  IFNULL(SensorNames.SensorName, Readings.Sensor) AS Sensor,
+  Sensor,
   ReadingTimeDate,
   Reading
   FROM Readings
-  LEFT JOIN SensorNames
-  ON Readings.Sensor=SensorNames.Sensor
   WHERE ReadingTimeDate >= NOW() - INTERVAL $DurationString
-  ORDER BY SENSOR, Readings.ReadingTimeDate DESC
+  ORDER BY SENSOR, Readings.ReadingTimeDate
   ;
   ";
+
 if(!$result = $conn->query($sql)){
     die('There was an error running the query [' . $db->error . ']');
   }
 else {
 
-  $DataArray=[];
-  $AveragesArray=[];
+  $DataArray=array();
+  $AveragesArray=array();
 
   while($row = $result->fetch_assoc()){
     $DataArray[$row['Sensor']][]="[".(1000*strtotime($row['ReadingTimeDate'])).",".$row['Reading']."]";
@@ -159,6 +165,14 @@ else {
     $AveragesArray[$row['Sensor']]['Min'] = min($AveragesArray[$row['Sensor']]['Min'], $row['Reading']);
     $AveragesArray[$row['Sensor']]['Sum'] = ($AveragesArray[$row['Sensor']]['Sum']) + $row['Reading'];
     $AveragesArray[$row['Sensor']]['Count'] = ($AveragesArray[$row['Sensor']]['Count']) + 1;
+    $AveragesArray[$row['Sensor']]['Current'] = $row['Reading'];
+    }
+
+    foreach ($AveragesArray as $key => $value) {
+        $sum = $AveragesArray[$key]['Sum'];
+        $count = $AveragesArray[$key]['Count'];
+        $average = round($sum / $count, 1);
+        $AveragesArray[$key]['Average']=$average;
     }
 
     $DataString='[';
@@ -177,25 +191,7 @@ else {
   }
 
 
-  // SQL to select the "most recent temperatures"
-  // This relies on the fact that the most recent time/date is the "Max" of ReadingTimeDate
-
-          $sql = "
-          SELECT SensorNames.SensorName as SensorName, Reading, ReadingTimeDate
-          FROM SensorNames, Readings
-          INNER JOIN
-          (SELECT Sensor, Max(ReadingTimeDate) AS MostRecentTimeStamp
-          FROM Readings GROUP BY Sensor) MostRecents
-          ON MostRecents.Sensor=Readings.Sensor
-          WHERE SensorNames.Sensor = Readings.Sensor
-          AND Readings.ReadingTimeDate=MostRecents.MostRecentTimeStamp
-          ORDER BY SensorName
-          ;
-          ";
-
-
-// Loop through the results, creating a Bootstrap "card" for each, using a mix of this and the array we made earlier.
-
+  // Create the container for the metrics chart
 
   echo '<div class="container">';
   echo '<h2>Metrics over the last ';
@@ -205,57 +201,7 @@ else {
           </div>';
   echo '</div>';
 
-
-  echo '<div class="container">';
-
-        if(!$result = $conn->query($sql)){
-          die('There was an error running the query [' . $db->error . ']');
-        }
-        else {
-          echo "<h2>Last $DurationDisplay</h2>";
-          echo "<div class='card-columns'>\r\n";
-
-          while($row = $result->fetch_assoc())
-          {
-            // The variable "theseaverages" is set first, then the AveragesArray Updated
-            // then the variable is reset. The reason for this is to get arround PHP processing
-            // issues where keys are themselves values out of arrays
-            $theseaverages=$AveragesArray[$row['SensorName']];
-            $AveragesArray[$row['SensorName']]['Current']=$row['Reading'];
-            $AveragesArray[$row['SensorName']]['RoundedAverage']=round(100*$theseaverages['Sum']/$theseaverages['Count'])/100;
-            $AveragesArray[$row['SensorName']]['UnroundedAverage']=$theseaverages['Sum']/$theseaverages['Count'];
-            $theseaverages=$AveragesArray[$row['SensorName']];
-
-            echo "<div class=card>\r\n";
-            echo "<div class='card-header'>";
-            echo $row['SensorName'];
-            echo "</div>\r\n";
-            echo "<div class='card-body'>";
-            echo "<h3> Latest: ".$theseaverages['Current']."</h3>";
-            echo "<p>Max: ".$theseaverages['Max']."</p>";
-            echo "<p>Average: ".$theseaverages['RoundedAverage']."</p>";
-            echo "<p>Min: ".$theseaverages['Min']."</p>";
-
-//            debugging
-//            print_r ($theseaverages);
-
-            echo "</div>\r\n";
-            echo "<div class='card-footer'><p>Latest at ";
-            echo $row['ReadingTimeDate'];
-            echo "</p></div>\r\n";
-            echo "</div>\r\n";
-
-          }
-
-          echo "</div>\r\n";
-        }
-  echo "</div>";
-
-
-
   // Output the "last period chart"
-
-
 
   echo '<div class="container">';
   echo '<h2>Readings over the last ';
@@ -291,25 +237,18 @@ else {
 
 
 
-      $SensorsArray=[];
-      $RangeArray=[];
-      $AverageArray=[];
-      $CurrentArray=[];
+      $SensorsArray=array();
+      $RangeArray=array();
+      $AverageArray=array();
+      $CurrentArray=array();
 
+      // To make HighCharts display the mixed graph correctly,
+      // we have to take the values and turn them into ranges
       foreach ($AveragesArray as $key => $value) {
-
-// Stuff to format the metrics string goes here
-
       $SensorsArray[]=$key;
       $RangeArray[]=($value['Min'].",".$value['Max']);
-      $AverageArray[]=(($value['RoundedAverage']-0.05).",".($value['RoundedAverage']+0.05));
+      $AverageArray[]=(($value['Average']-0.05).",".($value['Average']+0.05));
       $CurrentArray[]=(($value['Current']-0.05).",".($value['Current']+0.05));
-
-      echo "<div>";
-      print_r($key);
-      echo "<br/>";
-      print_r($value);
-      echo "<hr/></div>";
 
       }
 
@@ -386,11 +325,7 @@ else {
 $conn->close();
   // print_r($SensorsString);
   // echo "<hr/>";
-  print_r($CurrentString);
+  // print_r($CurrentString);
   // echo "<hr/>";
 
 ?>
-
-
-
-</body>
