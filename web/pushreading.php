@@ -12,11 +12,20 @@
 // having them in the code.
 
 
-$dbservername = "host.docker.internal";
+
+$dbservername = "localhost";
 $dbdatabasename = "GardenWeb";
-$dbusername = "rasp";
-$dbpassword = "rasprasp";
+$dbusername = "root";
+$dbpassword = "V2entur";
 $ValidationExpected="secret";  // Change this to a Validation secret to match the one the Pi is sending
+
+
+
+// $dbservername = "host.docker.internal";
+// $dbdatabasename = "GardenWeb";
+// $dbusername = "rasp";
+// $dbpassword = "rasprasp";
+// $ValidationExpected="secret";  // Change this to a Validation secret to match the one the Pi is sending
 
 
 // Create connection
@@ -61,13 +70,24 @@ if (!is_numeric($SensorReading)) {
   die("<p>Reading appeared bogus</p>");
 }
 
+$SensorName = $SensorID;
+
+$sql = "SELECT SensorName from SensorNames where Sensor='$SensorID';";
+
+$result=$conn->query($sql);
+if ($result->num_rows==1) {
+    $row=$result->fetch_assoc();
+    $SensorName=$row["SensorName"];
+}
+
+
 $sql = "INSERT
   INTO Readings (Sensor, ReadingTimeDate, Reading)
-  VALUES ('$SensorID', NOW(), $SensorReading)
+  VALUES ('$SensorName', NOW(), $SensorReading)
   ";
 
 if ($conn->query($sql) === TRUE) {
-    echo "Updated reading of $SensorReading for sensor $SensorID OK.";
+    echo "Updated reading of $SensorReading for sensor $SensorName ($SensorID) OK.";
 
 
 } else {
