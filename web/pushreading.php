@@ -70,6 +70,11 @@ if (!is_numeric($SensorReading)) {
   die("<p>Reading appeared bogus</p>");
 }
 
+
+if ($SensorReading > 75) {
+    die("<p>Reading too high</p>");
+}
+
 $SensorName = $SensorID;
 
 $sql = "SELECT SensorName from SensorNames where Sensor='$SensorID';";
