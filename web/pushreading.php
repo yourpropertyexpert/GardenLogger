@@ -16,16 +16,8 @@
 $dbservername = "localhost";
 $dbdatabasename = "GardenWeb";
 $dbusername = "root";
-$dbpassword = "V2entur";
+$dbpassword = "mypassword";
 $ValidationExpected="secret";  // Change this to a Validation secret to match the one the Pi is sending
-
-
-
-// $dbservername = "host.docker.internal";
-// $dbdatabasename = "GardenWeb";
-// $dbusername = "rasp";
-// $dbpassword = "rasprasp";
-// $ValidationExpected="secret";  // Change this to a Validation secret to match the one the Pi is sending
 
 
 // Create connection
