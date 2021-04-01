@@ -52,7 +52,7 @@
 
 // You'll need to replace the following with the credentials for your DATABASE
 // There is complexity about using localhost for Mysql connections,
-// so for Docker on Mac (which I use), it's better to use host.docker.internal
+// so for Docker on Mac (which I use), it's better to use docker.internal
 
 // You will note that I'm explicitly including the credentials here, rather than sharing
 // them with pushreading. This is to allow this page to use a database user with R/O access,
@@ -62,10 +62,10 @@
 // having them in the code.
 
 
-$dbservername = "host.docker.internal";
+$dbservername = "db";
 $dbdatabasename = "GardenWeb";
-$dbusername = "website";
-$dbpassword = "rasprasp";
+$dbusername = "root";
+$dbpassword = "my_secret_pw_shh";
 
 // Create connection
 

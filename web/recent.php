@@ -115,10 +115,10 @@ switch($_GET['Duration']) {
 }
 
 
-$dbservername = "host.docker.internal";
+$dbservername = "db";
 $dbdatabasename = "GardenWeb";
-$dbusername = "website";
-$dbpassword = "rasprasp";
+$dbusername = "root";
+$dbpassword = "my_secret_pw_shh";
 
 // Create connection
 
