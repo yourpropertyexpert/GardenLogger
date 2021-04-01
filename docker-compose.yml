@@ -1,0 +1,33 @@
+version: '3'
+
+services:
+  db:
+    image: mariadb:10.5.9-focal
+    command: --default-authentication-plugin=mysql_native_password
+    container_name: garden_db
+    environment:
+      MYSQL_ROOT_PASSWORD: my_secret_pw_shh
+      MYSQL_DATABASE: GardenWeb
+      MYSQL_USER: garden
+      MYSQL_PASSWORD: garden
+    ports:
+      - "3306:3306"
+    volumes:
+      - garden_dbvolume:/var/lib/mysql
+  web:
+    build: ./docker-web
+    container_name: garden_web
+    depends_on:
+      - db
+    volumes:
+      - ./web/:/var/www/html/
+    env_file:
+      - docker-web/web-variables.env
+    ports:
+      - "80:80"
+      - "443:443"
+    stdin_open: true
+    tty: true
+    command: /root/start.sh
+volumes:
+  garden_dbvolume:

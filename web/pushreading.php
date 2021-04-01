@@ -13,10 +13,10 @@
 
 
 
-$dbservername = "localhost";
+$dbservername = "db";
 $dbdatabasename = "GardenWeb";
 $dbusername = "root";
-$dbpassword = "mypassword";
+$dbpassword = "my_secret_pw_shh";
 $ValidationExpected="secret";  // Change this to a Validation secret to match the one the Pi is sending
 
 
