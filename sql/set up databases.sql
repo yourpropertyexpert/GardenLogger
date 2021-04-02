@@ -12,7 +12,7 @@ CREATE TABLE SensorNames (
   SensorName varchar(255)
 );
 
-
+ALTER TABLE SensorNames ADD PRIMARY KEY (Sensor);
 
 CREATE USER 'rasp'@'%' IDENTIFIED BY 'rasprasp';
 GRANT ALL PRIVILEGES ON * . * TO 'rasp'@'%';
