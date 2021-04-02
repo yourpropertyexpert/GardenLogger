@@ -67,20 +67,10 @@ switch($_GET['Duration']) {
     $DurationDisplay = "day";
 }
 
-
-$dbservername = "db";
-$dbdatabasename = "GardenWeb";
-$dbusername = "root";
-$dbpassword = "my_secret_pw_shh";
-
-// Create connection
-
-$conn = new \mysqli($dbservername, $dbusername, $dbpassword, $dbdatabasename);
-// Check connection
+$conn = new DB();
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
-
 
 $AveragesArray=array();
 
