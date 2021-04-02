@@ -12,7 +12,8 @@ It contains the following:
 To make this work, you will need:
 
 - A server running MySQL (if you're getting started, I recommend the mysql:5.7.22 docker image, but it should run on most versions of MySQL)
-- A server running Apache with PHP (if you're getting start, I recommend the php:7.2.7-apache docker image, but it should run on most versions of PHP / Apache with MySQLI enabled)
+- A server running Apache with PHP (if you're getting started, I recommend the php:7.3-apache docker image, but it should run on most versions of PHP / Apache with MySQLI enabled)
 - A raspberry Pi with Raspian and Python installed. [There's nothing too specific about needing Raspian, and I it should work on most Raspberry Pi linuxes.]
 - One or more 1Wire temperature sensors connected to the GPIO ports. [This code assumes you already have them installed and working.]
 
+The first two can be spun up quickly using the included docker-compose file. The docker-web directory also contains a Dockerfile to build a stable image for the web server, and includes the composer.json file required to install the third-party components.

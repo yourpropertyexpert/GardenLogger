@@ -1,56 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <title>GardenLogger</title>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
-  <script src="http://code.highcharts.com/highcharts.js"></script>
-
-</head>
-
-<body>
-
-
-<div class="jumbotron">
-  <h1>GardenLogger</h1>
-  <p>Gardenlogger is a website (that runs on a web server on the Internet)
-     that accepts temperature readings (from sensors attached to a Raspberry Pi) in the home...</p>
-</div>
-
-
-<nav class="navbar navbar-expand-sm bg-dark navbar-dark fixed-top">
-
-  <ul class="navbar-nav">
-    <li class="nav-item">
-      <a class="nav-link .active" href="index.php">Home</a>
-    </li>
-    <li class="nav-item dropdown">
-      <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
-        Recent
-      </a>
-      <div class="dropdown-menu">
-        <a class="dropdown-item" href="recent.php?Duration=1h">Hour</a>
-        <a class="dropdown-item" href="recent.php?Duration=12h">12 hours</a>
-        <a class="dropdown-item" href="recent.php?Duration=24h">Day</a>
-        <a class="dropdown-item" href="recent.php?Duration=7d">Week</a>
-        <a class="dropdown-item" href="recent.php?Duration=1mo">Month</a>
-        <a class="dropdown-item" href="recent.php?Duration=1y">Year</a>
-        <a class="dropdown-item" href="recent.php?Duration=100y">All time</a>
-      </div>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" href="table.php">All readings</a>
-    </li>
-  </ul>
-</nav>
-
-
 <?php
+
+namespace yourpropertyexpert;
+
+require_once("./includes.php");
+
+$head = new Template();
+echo $head->render("menu", []);
 
 // You'll need to replace the following with the credentials for your DATABASE
 // There is complexity about using localhost for Mysql connections,
@@ -63,7 +18,6 @@
 // In production, it is better to move the credentials out to the environment rather than
 // having them in the code.
 
-
 $dbservername = "db";
 $dbdatabasename = "GardenWeb";
 $dbusername = "root";
@@ -71,7 +25,7 @@ $dbpassword = "my_secret_pw_shh";
 
 // Create connection
 
-$conn = new mysqli($dbservername, $dbusername, $dbpassword, $dbdatabasename);
+$conn = new \mysqli($dbservername, $dbusername, $dbpassword, $dbdatabasename);
 // Check connection
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
@@ -80,7 +34,6 @@ if ($conn->connect_error) {
 
 // SQL to select the "most recent temperatures"
 // This relies on the fact that the most recent time/date is the "Max" of ReadingTimeDate
-
         $sql = "
         SELECT SensorNames.SensorName as SensorName, Reading, ReadingTimeDate
         FROM SensorNames, Readings
@@ -93,7 +46,6 @@ if ($conn->connect_error) {
         ORDER BY SensorName
         ;
         ";
-
 
 // Loop through the results, creating a Bootstrap "card" for each
 
@@ -150,7 +102,6 @@ if(!$result = $conn->query($sql)){
     die('There was an error running the query [' . $db->error . ']');
   }
 else {
-
   $CategoriesArray=[];
   $DataArray=[];
 
