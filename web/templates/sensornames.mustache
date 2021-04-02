@@ -17,12 +17,13 @@
         {{#all}}
         <tr>
             <form action="managesensors.php" method="POST">
-                <input type="hidden" name="action" value="Edit"/>
                 <input type="hidden" name="sensor" value="{{Sensor}}"/>
+                <input type="hidden" name="oldname" value="{{Sensor}}"/>
                 <td>{{Sensor}}</td>
                 <td>{{SensorName}}</td>
                 <td><input type="text" name="sensorname" value="{{SensorName}}"/></td>
-                <td><input class="btn btn-primary" type="Submit" value="Update name"/></td>
+                <td><button class="btn btn-primary" name="action" value="Edit" type="Submit" value="Update name">Update name for new readings</button></td>
+                <td><button class="btn btn-primary" name="action" value="Backfill" type="Submit">Backfill data to new name</button></td>
             </form>
         </tr>
         {{/all}}
