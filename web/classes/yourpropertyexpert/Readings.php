@@ -40,7 +40,6 @@ class Readings
      */
     public function backfillFromPost($post)
     {
-        echo "backfilling";
         if (!array_key_exists("oldname", $post)) {
             return false;
         }
