@@ -7,38 +7,15 @@ require_once("./includes.php");
 $head = new Template();
 
 echo $head->render("menu", []);
-// You'll need to replace the following with the credentials for your DATABASE
-// There is complexity about using localhost for Mysql connections,
-// so for Docker on Mac (which I use), it's better to use docker.internal
-
-// You will note that I'm explicitly including the credentials here, rather than sharing
-// them with pushreading. This is to allow this page to use a database user with R/O access,
-// and the Pi website to use a database user with Read-Write access.
-
-// In production, it is better to move the credentials out to the environment rather than
-// having them in the code.
-
-
-$dbservername = "db";
-$dbdatabasename = "GardenWeb";
-$dbusername = "root";
-$dbpassword = "my_secret_pw_shh";
-
-// Create connection
-
-$conn = new \mysqli($dbservername, $dbusername, $dbpassword, $dbdatabasename);
-// Check connection
+$conn = new DB();
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
-
 
 echo '<div class="container">
       <h2>Chart</h2>
       <div id="chartcontainer"/>
       </div>';
-
-
 
 $sql = "SELECT * FROM Readings ORDER BY SENSOR, ReadingTimeDate DESC ;";
 
