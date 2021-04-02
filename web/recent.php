@@ -266,9 +266,5 @@ else {
 
 
 $conn->close();
-  // print_r($SensorsString);
-  // echo "<hr/>";
-  // print_r($CurrentString);
-  // echo "<hr/>";
-
-?>
+$foot = new Template();
+echo $foot->render("foot", []);

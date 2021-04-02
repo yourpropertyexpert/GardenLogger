@@ -131,17 +131,7 @@ else {
     });
     </script>";
   }
-
-
-
-
 $conn->close();
 
-
-// print_r($DataString);
-
-?>
-
-
-
-</body>
+$foot = new Template();
+echo $foot->render("foot", []);
