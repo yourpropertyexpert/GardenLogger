@@ -12,8 +12,15 @@ $pagebody = new Template();
 $data = [];
 
 if (array_key_exists("action", $_REQUEST) && $_REQUEST["action"] == "Edit") {
-    if($sensornames->upsertFromPost($_REQUEST)) {
+    if ($sensornames->upsertFromPost($_REQUEST)) {
         $data["updated"] = true;
+    }
+}
+
+if (array_key_exists("action", $_REQUEST) && $_REQUEST["action"] == "Backfill") {
+    $readings = new Readings();
+    if ($readings->backfillFromPost($_REQUEST)) {
+        $data["backfilled"] = true;
     }
 }
 
