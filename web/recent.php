@@ -31,7 +31,6 @@ switch($_GET['Duration']) {
   $DurationDisplay = "4 hours";
   break;
 
-
   case '12h':
   $DurationString="12 HOUR";
   $DurationDisplay = "12 hours";
